@@ -53,7 +53,7 @@
         }
         .hint {
             font-size: 12px;
-            color: #64748b;
+            color: #38bdf8;
             margin-top: 4px;
         }
         button {
@@ -77,7 +77,7 @@
             background: #0b0f19;
             color: #38bdf8;
             font-family: monospace;
-            height: 180px;
+            height: 200px;
             resize: vertical;
         }
         .copy-btn {
@@ -107,15 +107,15 @@
     </div>
 
     <div class="form-group">
-        <label>Photo de profil (مسار صورة البروفایل):</label>
+        <label>Photo de profil (مسار صورة البروفايل):</label>
         <input type="text" id="itemProfileImg" placeholder="ex: images/restaurants/profile1.jpg">
         <div class="hint">ضع مسار الصورة مباشرة كما هو مرفوع في مستودع GitHub</div>
     </div>
 
     <div class="form-group">
-        <label>Images des Services / Menu (مسارات صور الخدمات مفصولة بفاصلة ,):</label>
-        <textarea id="itemImages" placeholder="ex: images/restaurants/menu1.jpg, images/restaurants/menu2.jpg"></textarea>
-        <div class="hint">إذا كانت هناك عدة صور للخدمات/القائمة، افصل بينها بفاصلة `,`</div>
+        <label>Images des Services / Menu (كل مسار في سطر مستقل):</label>
+        <textarea id="itemImages" rows="5" placeholder="images/restaurants/service1.jpg&#10;images/restaurants/service2.jpg&#10;images/restaurants/service3.jpg"></textarea>
+        <div class="hint">اكتب كل رابط صورة في سطر (اضغط Enter للانتقال للسطر الموالي لكل صورة جديدة)</div>
     </div>
 
     <button onclick="generateJSON()">Générer le JSON</button>
@@ -133,13 +133,13 @@
         let address = document.getElementById("itemAddress").value.trim();
         let phone = document.getElementById("itemPhone").value.trim();
         let profileImg = document.getElementById("itemProfileImg").value.trim();
-        let rawImages = document.getElementById("itemImages").value.trim();
+        let rawImages = document.getElementById("itemImages").value;
 
-        // تحويل مسارات الصور إلى Array
-        let imagesArray = [];
-        if (rawImages !== "") {
-            imagesArray = rawImages.split(',').map(img => img.trim()).filter(img => img !== "");
-        }
+        // فصل النصوص بناءً على الأسطر (كل سطر يعتبر صورة مستقلة)
+        let imagesArray = rawImages
+            .split('\n')
+            .map(img => img.trim())
+            .filter(img => img !== "");
 
         let obj = {
             name: name,
@@ -149,7 +149,7 @@
             menuImages: imagesArray
         };
 
-        // طباعة النتيجة مع تنسيق جميل
+        // طباعة النتيجة بتنسيق JSON مرتب
         document.getElementById("jsonOutput").value = JSON.stringify(obj, null, 4);
     }
 
