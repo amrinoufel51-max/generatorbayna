@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bayna - Générateur de JSON</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+            text-align: center;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            background: white;
+            color: var(--text-color);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary-color);
+        }
+
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 0.85rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 1rem;
+        }
+
+        .btn:hover {
+            background-color: #1d4ed8;
+        }
+
+        .output-section {
+            margin-top: 2rem;
+        }
+
+        pre {
+            background: #1e293b;
+            color: #38bdf8;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            max-height: 250px;
+        }
+
+        .btn-copy {
+            background-color: #10b981;
+            margin-top: 0.75rem;
+        }
+
+        .btn-copy:hover {
+            background-color: #059669;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Bayna Generator</h1>
+        <p class="subtitle">Remplissez les informations pour générer le code JSON du commerce</p>
+
+        <div class="form-group">
+            <label>ID (Numéro unique, ex: 9)</label>
+            <input type="number" id="itemId" value="9">
+        </div>
+
+        <div class="form-group">
+            <label>Nom du Commerce / Service</label>
+            <input type="text" id="itemName" placeholder="Ex: Restaurant El Bacha">
+        </div>
+
+        <div class="form-group">
+            <label>Secteur (Catégorie)</label>
+            <select id="itemCategory">
+                <option value="restaurants">Restaurants</option>
+                <option value="sweets">Pâtisseries & Gâteaux</option>
+                <option value="clinics">Cliniques & Pharmacies</option>
+                <option value="depanage">Dépannage Auto</option>
+                <option value="delivery">Livraison & Transport</option>
+                <option value="barbershop">Salons de Coiffure</option>
+                <option value="events">Salles & Fêtes</option>
+                <option value="serviceauto">Service Auto</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Wilaya</label>
+            <select id="itemWilaya">
+                <option value="Constantine">Constantine</option>
+                <option value="Algiers">Alger</option>
+                <option value="Oran">Oran</option>
+                <option value="Annaba">Annaba</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Adresse</label>
+            <input type="text" id="itemAddress" placeholder="Ex: Ali Mendjeli, Constantine">
+        </div>
+
+        <div class="form-group">
+            <label>Numéro de Téléphone (Format international)</label>
+            <input type="text" id="itemPhone" value="+2133100000">
+        </div>
+
+        <div class="form-group">
+            <label>Lien de l'Image (Photo de profil / الواجهة)</label>
+            <input type="text" id="itemImage" placeholder="https://images.unsplash.com/...">
+        </div>
+
+        <div class="form-group">
+            <label>Détails des Services / Menu</label>
+            <textarea id="itemInfo" placeholder="Menu ou services proposés..."></textarea>
+        </div>
+
+        <button class="btn" onclick="generateJSON()">Générer le JSON</button>
+
+        <div class="output-section">
+            <label>Résultat JSON :</label>
+            <pre id="jsonOutput">Le code apparaîtra ici...</pre>
+            <button class="btn btn-copy" onclick="copyJSON()"><i class="fa-solid fa-copy"></i> Copier le JSON</button>
+        </div>
+    </div>
+
+    <script>
+        function generateJSON() {
+            const categoryNames = {
+                "restaurants": "Restaurants",
+                "sweets": "Pâtisseries & Gâteaux",
+                "clinics": "Cliniques & Pharmacies",
+                "depanage": "Dépannage Auto",
+                "delivery": "Livraison & Transport",
+                "barbershop": "Salons de Coiffure",
+                "events": "Salles & Fêtes",
+                "serviceauto": "Service Auto"
+            };
+
+            const catKey = document.getElementById("itemCategory").value;
+
+            const item = {
+                id: parseInt(document.getElementById("itemId").value),
+                name: document.getElementById("itemName").value,
+                category: catKey,
+                categoryName: categoryNames[catKey],
+                wilaya: document.getElementById("itemWilaya").value,
+                address: document.getElementById("itemAddress").value,
+                phone: document.getElementById("itemPhone").value,
+                image: document.getElementById("itemImage").value,
+                servicesInfo: document.getElementById("itemInfo").value
+            };
+
+            document.getElementById("jsonOutput").innerText = JSON.stringify(item, null, 4) + ",";
+        }
+
+        function copyJSON() {
+            const text = document.getElementById("jsonOutput").innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert("JSON copié avec succès ! Collez-le dans votre base de données.");
+            });
+        }
+    </script>
+</body>
+</html>
