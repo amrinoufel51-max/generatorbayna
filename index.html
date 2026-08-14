@@ -2,33 +2,45 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>JSON Generator للولايات</title>
+    <title>JSON Item Generator</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; background: #f4f4f9; }
-        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        button { background: #28a745; color: white; padding: 10px; border: none; width: 100%; cursor: pointer; border-radius: 4px; }
-        textarea { width: 100%; height: 200px; margin-top: 20px; font-family: monospace; }
+        body { font-family: sans-serif; padding: 20px; background: #f0f2f5; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        input { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        button { background: #007bff; color: white; padding: 12px; border: none; width: 100%; cursor: pointer; border-radius: 5px; margin-top: 10px; }
+        textarea { width: 100%; height: 250px; margin-top: 20px; font-family: monospace; background: #272822; color: #f8f8f2; padding: 10px; border-radius: 5px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>مولد بيانات JSON</h2>
-    <input type="number" id="id" placeholder="رقم الولاية (ID)">
-    <input type="text" id="name" placeholder="الاسم بالفرنسية (ex: Alger)">
-    <input type="text" id="name_ar" placeholder="الاسم بالعربية (ex: الجزائر)">
-    <button onclick="generateJSON()">توليد كود JSON</button>
-    <textarea id="output" readonly placeholder="سيظهر الكود هنا..."></textarea>
+    <h2>مولد بيانات المحلات (JSON)</h2>
+    <input type="text" id="name" placeholder="اسم المحل (Name)">
+    <input type="text" id="profileImg" placeholder="رابط صورة البروفايل (ex: images/alger/pic.jpg)">
+    <input type="text" id="phone" placeholder="رقم الهاتف (Phone)">
+    <input type="text" id="menuImages" placeholder="روابط صور المنيو (افصل بينها بفاصلة ,)">
+    
+    <button onclick="generateJSON()">توليد الكود</button>
+    <textarea id="output" readonly placeholder="سوف يظهر كود الـ JSON هنا..."></textarea>
 </div>
 
 <script>
     function generateJSON() {
-        const data = {
-            id: parseInt(document.getElementById('id').value),
-            name: document.getElementById('name').value,
-            name_ar: document.getElementById('name_ar').value
-        };
+        const name = document.getElementById('name').value;
+        const profileImg = document.getElementById('profileImg').value;
+        const phone = document.getElementById('phone').value;
+        
+        // تحويل سلسلة الصور إلى مصفوفة (Array)
+        const menuImagesStr = document.getElementById('menuImages').value;
+        const menuImagesArray = menuImagesStr.split(',').map(item => item.trim()).filter(item => item !== "");
+
+        const data = [{
+            name: name,
+            profileImg: profileImg,
+            phone: phone,
+            menuImages: menuImagesArray
+        }];
+
         document.getElementById('output').value = JSON.stringify(data, null, 4);
     }
 </script>
