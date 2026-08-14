@@ -1,163 +1,35 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON Generator - La Source</title>
+    <title>JSON Generator للولايات</title>
     <style>
-        * { box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: #020617;
-            color: #f8fafc;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
-        .container {
-            max-width: 700px;
-            width: 100%;
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        }
-        h2 {
-            text-align: center;
-            color: #38bdf8;
-            margin-bottom: 20px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            color: #94a3b8;
-        }
-        input, textarea {
-            width: 100%;
-            padding: 12px;
-            background: #0b0f19;
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            border-radius: 10px;
-            color: #fff;
-            font-size: 15px;
-            outline: none;
-        }
-        input:focus, textarea:focus {
-            border-color: #38bdf8;
-        }
-        .hint {
-            font-size: 12px;
-            color: #38bdf8;
-            margin-top: 4px;
-        }
-        button {
-            background: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%);
-            color: #fff;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-            transition: opacity 0.2s;
-        }
-        button:hover { opacity: 0.9; }
-        .output-section {
-            margin-top: 25px;
-        }
-        textarea.output-box {
-            background: #0b0f19;
-            color: #38bdf8;
-            font-family: monospace;
-            height: 200px;
-            resize: vertical;
-        }
-        .copy-btn {
-            background: #10b981;
-            margin-top: 10px;
-        }
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f9; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background: #28a745; color: white; padding: 10px; border: none; width: 100%; cursor: pointer; border-radius: 4px; }
+        textarea { width: 100%; height: 200px; margin-top: 20px; font-family: monospace; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>JSON Generator for La Source</h2>
-    
-    <div class="form-group">
-        <label>Nom de l'établissement (الاسم):</label>
-        <input type="text" id="itemName" placeholder="ex: Restaurant Le Gourmet">
-    </div>
-
-    <div class="form-group">
-        <label>Adresse (العنوان):</label>
-        <input type="text" id="itemAddress" placeholder="ex: 5 Rue Didouche Mourad, Constantine">
-    </div>
-
-    <div class="form-group">
-        <label>Téléphone (رقم الهاتف):</label>
-        <input type="text" id="itemPhone" placeholder="ex: 031000000 / 0550000000">
-    </div>
-
-    <div class="form-group">
-        <label>Photo de profil (مسار صورة البروفايل):</label>
-        <input type="text" id="itemProfileImg" placeholder="ex: images/restaurants/profile1.jpg">
-        <div class="hint">ضع مسار الصورة مباشرة كما هو مرفوع في مستودع GitHub</div>
-    </div>
-
-    <div class="form-group">
-        <label>Images des Services / Menu (كل مسار في سطر مستقل):</label>
-        <textarea id="itemImages" rows="5" placeholder="images/restaurants/service1.jpg&#10;images/restaurants/service2.jpg&#10;images/restaurants/service3.jpg"></textarea>
-        <div class="hint">اكتب كل رابط صورة في سطر (اضغط Enter للانتقال للسطر الموالي لكل صورة جديدة)</div>
-    </div>
-
-    <button onclick="generateJSON()">Générer le JSON</button>
-
-    <div class="output-section">
-        <label>Résultat JSON:</label>
-        <textarea id="jsonOutput" class="output-box" readonly></textarea>
-        <button class="copy-btn" onclick="copyJSON()">Copier le JSON</button>
-    </div>
+    <h2>مولد بيانات JSON</h2>
+    <input type="number" id="id" placeholder="رقم الولاية (ID)">
+    <input type="text" id="name" placeholder="الاسم بالفرنسية (ex: Alger)">
+    <input type="text" id="name_ar" placeholder="الاسم بالعربية (ex: الجزائر)">
+    <button onclick="generateJSON()">توليد كود JSON</button>
+    <textarea id="output" readonly placeholder="سيظهر الكود هنا..."></textarea>
 </div>
 
 <script>
     function generateJSON() {
-        let name = document.getElementById("itemName").value.trim();
-        let address = document.getElementById("itemAddress").value.trim();
-        let phone = document.getElementById("itemPhone").value.trim();
-        let profileImg = document.getElementById("itemProfileImg").value.trim();
-        let rawImages = document.getElementById("itemImages").value;
-
-        // فصل النصوص بناءً على الأسطر (كل سطر يعتبر صورة مستقلة)
-        let imagesArray = rawImages
-            .split('\n')
-            .map(img => img.trim())
-            .filter(img => img !== "");
-
-        let obj = {
-            name: name,
-            address: address,
-            phone: phone,
-            profileImg: profileImg,
-            menuImages: imagesArray
+        const data = {
+            id: parseInt(document.getElementById('id').value),
+            name: document.getElementById('name').value,
+            name_ar: document.getElementById('name_ar').value
         };
-
-        // طباعة النتيجة بتنسيق JSON مرتب
-        document.getElementById("jsonOutput").value = JSON.stringify(obj, null, 4);
-    }
-
-    function copyJSON() {
-        let outputBox = document.getElementById("jsonOutput");
-        outputBox.select();
-        document.execCommand("copy");
-        alert("JSON copié avec succès !");
+        document.getElementById('output').value = JSON.stringify(data, null, 4);
     }
 </script>
 
